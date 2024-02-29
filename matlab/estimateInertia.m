@@ -1,0 +1,45 @@
+function out = estimateInertia(M,sample_t,Omega)
+persistent ekf;
+if isempty(ekf)
+%% 初始化惯性矩阵估计 
+measurementJacobianFcn = @(x)[eye(3) zeros(3)];
+
+% 初始状态和协方差
+initialState = ones(6,1)*1e-3;
+initialCovariance = ones(6)*1e-3+eye(6)*1;
+processNoise=eye(6)*1e-4;
+measurementNoise=eye(3)*1e-4;
+
+% 创建trackingEKF对象
+ekf = trackingEKF('StateTransitionFcn',@stateTransitionFcn, ...
+    'MeasurementFcn',@measurementFcn, ...
+    "State",initialState, ...
+    'StateCovariance', initialCovariance, ...
+    'MeasurementJacobianFcn', measurementJacobianFcn, ...
+    "ProcessNoise",processNoise, ...
+    "MeasurementNoise",measurementNoise);
+end
+%% inertia estimate
+predict(ekf,[M;sample_t]); % 预测下一时刻的状态
+correct(ekf, Omega); % 根据实际测量值更新状态估计
+% 获取更新后的状态和协方差
+stateEstimate = ekf.State;
+covarianceEstimate = ekf.StateCovariance;
+out=[stateEstimate(:);covarianceEstimate(:)];
+end
+
+
+function out= stateTransitionFcn(x,p_)
+out=zeros(6,1);
+Omega=x(1:3);
+inertia = diag(x(4:6));
+M=p_(1:3);
+sample_T=p_(4);
+dotOmega=inertia \ (M - cross(Omega,inertia * Omega));
+out(1:3)=x(1:3)+sample_T*dotOmega;
+out(4:6)=x(4:6);
+end
+
+function out=measurementFcn(x)
+out=x(1:3);
+end
