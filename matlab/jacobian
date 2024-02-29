@@ -1,0 +1,8 @@
+J =
+ 
+[                                 1, (Omega_z*delta_t*(I_y - I_z))/I_x,  (Omega_y*delta_t*(I_y - I_z))/I_x, -(delta_t*(M_x + Omega_y*Omega_z*(I_y - I_z)))/I_x^2,                        (Omega_y*Omega_z*delta_t)/I_x,                       -(Omega_y*Omega_z*delta_t)/I_x]
+[-(Omega_z*delta_t*(I_x - I_z))/I_y,                                 1, -(Omega_x*delta_t*(I_x - I_z))/I_y,                       -(Omega_x*Omega_z*delta_t)/I_y, -(delta_t*(M_y - Omega_x*Omega_z*(I_x - I_z)))/I_y^2,                        (Omega_x*Omega_z*delta_t)/I_y]
+[ (Omega_y*delta_t*(I_x - I_y))/I_z, (Omega_x*delta_t*(I_x - I_y))/I_z,                                  1,                        (Omega_x*Omega_y*delta_t)/I_z,                       -(Omega_x*Omega_y*delta_t)/I_z, -(delta_t*(M_z + Omega_x*Omega_y*(I_x - I_y)))/I_z^2]
+[                                 0,                                 0,                                  0,                                                    1,                                                    0,                                                    0]
+[                                 0,                                 0,                                  0,                                                    0,                                                    1,                                                    0]
+[                                 0,                                 0,                                  0,                                                    0,                                                    0,                                                    1]
