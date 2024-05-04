@@ -2,7 +2,7 @@
 // File: main.cpp
 //
 // MATLAB Coder version            : 5.6
-// C/C++ source code generated on  : 29-Feb-2024 17:32:45
+// C/C++ source code generated on  : 01-Mar-2024 18:43:15
 //
 
 /*************************************************************************/
@@ -48,7 +48,7 @@ static double argInit_real_T();
 static void argInit_3x1_real_T(double result[3])
 {
   // Loop over the array to initialize each element.
-  for (int idx0 = 0; idx0 < 3; idx0++) {
+  for (int idx0{0}; idx0 < 3; idx0++) {
     // Set the value of the array element.
     // Change this value to the value that the application requires.
     result[idx0] = argInit_real_T();
@@ -71,12 +71,10 @@ static double argInit_real_T()
 //
 int main(int, char **)
 {
-  InertiaEstimatorEKF *classInstance;
-  classInstance = new InertiaEstimatorEKF;
+  InertiaEstimatorEKF classInstance;
   // Invoke the entry-point functions.
   // You can call entry-point functions multiple times.
-  main_estimateInertia(classInstance);
-  delete classInstance;
+  main_estimateInertia(&classInstance);
   return 0;
 }
 

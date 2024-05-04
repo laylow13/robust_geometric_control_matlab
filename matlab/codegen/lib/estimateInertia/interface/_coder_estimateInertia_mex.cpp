@@ -2,7 +2,7 @@
 // File: _coder_estimateInertia_mex.cpp
 //
 // MATLAB Coder version            : 5.6
-// C/C++ source code generated on  : 29-Feb-2024 17:32:45
+// C/C++ source code generated on  : 01-Mar-2024 18:43:15
 //
 
 // Include Files
@@ -35,8 +35,8 @@ void mexFunction(int32_T nlhs, mxArray *plhs[], int32_T nrhs,
 //
 emlrtCTX mexFunctionCreateRootTLS()
 {
-  emlrtCreateRootTLSR2022a(&emlrtRootTLSGlobal, &emlrtContextGlobal, NULL, 1,
-                           NULL, "GBK", true);
+  emlrtCreateRootTLSR2022a(&emlrtRootTLSGlobal, &emlrtContextGlobal, nullptr, 1,
+                           nullptr, "GBK", true);
   return emlrtRootTLSGlobal;
 }
 
@@ -50,10 +50,10 @@ emlrtCTX mexFunctionCreateRootTLS()
 void unsafe_estimateInertia_mexFunction(int32_T nlhs, mxArray *plhs[1],
                                         int32_T nrhs, const mxArray *prhs[3])
 {
-  emlrtStack st = {
-      NULL, // site
-      NULL, // tls
-      NULL  // prev
+  emlrtStack st{
+      nullptr, // site
+      nullptr, // tls
+      nullptr  // prev
   };
   const mxArray *b_prhs[3];
   const mxArray *outputs;

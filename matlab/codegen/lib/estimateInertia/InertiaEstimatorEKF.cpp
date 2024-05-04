@@ -2,7 +2,7 @@
 // File: InertiaEstimatorEKF.cpp
 //
 // MATLAB Coder version            : 5.6
-// C/C++ source code generated on  : 29-Feb-2024 17:32:45
+// C/C++ source code generated on  : 01-Mar-2024 18:43:15
 //
 
 // Include Files
@@ -14,8 +14,9 @@
 #include "rt_nonfinite.h"
 #include "trackingEKF.h"
 #include "xnrm2.h"
-#include <math.h>
-#include <string.h>
+#include <algorithm>
+#include <cmath>
+#include <cstring>
 
 // Function Declarations
 static void estimateInertia_init(InertiaEstimatorEKF *aInstancePtr);
@@ -47,7 +48,6 @@ static void estimateInertia_init(InertiaEstimatorEKF *aInstancePtr)
 //
 InertiaEstimatorEKF::InertiaEstimatorEKF()
 {
-  rt_InitInfAndNaN();
   SD_.pd = &pd_;
   estimateInertia_init(this);
 }
@@ -56,9 +56,7 @@ InertiaEstimatorEKF::InertiaEstimatorEKF()
 // Arguments    : void
 // Return Type  : void
 //
-InertiaEstimatorEKF::~InertiaEstimatorEKF()
-{
-}
+InertiaEstimatorEKF::~InertiaEstimatorEKF() = default;
 
 //
 // Arguments    : const double M[3]
@@ -70,55 +68,55 @@ InertiaEstimatorEKF::~InertiaEstimatorEKF()
 void InertiaEstimatorEKF::estimateInertia(const double M[3], double sample_t,
                                           const double Omega[3], double out[42])
 {
-  static const double b_value[36] = {1.000499875062461,
-                                     0.00099950037468777317,
-                                     0.00099950037468777317,
-                                     0.00099950037468777317,
-                                     0.00099950037468777317,
-                                     0.00099950037468777317,
-                                     0.0,
-                                     1.0004993758114,
-                                     0.00099850237106926133,
-                                     0.00099850237106926133,
-                                     0.00099850237106926133,
-                                     0.00099850237106926133,
-                                     0.0,
-                                     0.0,
-                                     1.0004988775565997,
-                                     0.00099750635848115622,
-                                     0.00099750635848115622,
-                                     0.00099750635848115622,
-                                     0.0,
-                                     0.0,
-                                     0.0,
-                                     1.0004983802950811,
-                                     0.00099651233097119616,
-                                     0.00099651233097119616,
-                                     0.0,
-                                     0.0,
-                                     0.0,
-                                     0.0,
-                                     1.000497884023877,
-                                     0.00099552028261082272,
-                                     0.0,
-                                     0.0,
-                                     0.0,
-                                     0.0,
-                                     0.0,
-                                     1.0004973887400315};
-  static const double c_value[36] = {
+  static const double b_value[36]{1.000499875062461,
+                                  0.00099950037468777317,
+                                  0.00099950037468777317,
+                                  0.00099950037468777317,
+                                  0.00099950037468777317,
+                                  0.00099950037468777317,
+                                  0.0,
+                                  1.0004993758114,
+                                  0.00099850237106926133,
+                                  0.00099850237106926133,
+                                  0.00099850237106926133,
+                                  0.00099850237106926133,
+                                  0.0,
+                                  0.0,
+                                  1.0004988775565997,
+                                  0.00099750635848115622,
+                                  0.00099750635848115622,
+                                  0.00099750635848115622,
+                                  0.0,
+                                  0.0,
+                                  0.0,
+                                  1.0004983802950811,
+                                  0.00099651233097119616,
+                                  0.00099651233097119616,
+                                  0.0,
+                                  0.0,
+                                  0.0,
+                                  0.0,
+                                  1.000497884023877,
+                                  0.00099552028261082272,
+                                  0.0,
+                                  0.0,
+                                  0.0,
+                                  0.0,
+                                  0.0,
+                                  1.0004973887400315};
+  static const double c_value[36]{
       0.01, 0.0, 0.0,  0.0, 0.0,  0.0, 0.0, 0.01, 0.0, 0.0,  0.0, 0.0,
       0.0,  0.0, 0.01, 0.0, 0.0,  0.0, 0.0, 0.0,  0.0, 0.01, 0.0, 0.0,
       0.0,  0.0, 0.0,  0.0, 0.01, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0, 0.01};
-  static const double b_b[18] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0,
-                                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-  static const double d_value[9] = {0.01, 0.0, 0.0, 0.0, 0.01,
-                                    0.0,  0.0, 0.0, 0.01};
-  static const signed char b_iv[18] = {1, 0, 0, 0, 1, 0, 0, 0, 1,
-                                       0, 0, 0, 0, 0, 0, 0, 0, 0};
-  static const signed char iv1[18] = {1, 0, 0, 0, 0, 0, 0, 1, 0,
-                                      0, 0, 0, 0, 0, 1, 0, 0, 0};
-  static const signed char b[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+  static const double b_b[18]{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0,
+                              0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  static const double d_value[9]{0.01, 0.0, 0.0, 0.0, 0.01,
+                                 0.0,  0.0, 0.0, 0.01};
+  static const signed char b_iv[18]{1, 0, 0, 0, 1, 0, 0, 0, 1,
+                                    0, 0, 0, 0, 0, 0, 0, 0, 0};
+  static const signed char iv1[18]{1, 0, 0, 0, 0, 0, 0, 1, 0,
+                                   0, 0, 0, 0, 0, 1, 0, 0, 0};
+  static const signed char b[9]{1, 0, 0, 0, 1, 0, 0, 0, 1};
   double dv[36];
   double dv1[36];
   double c_M[27];
@@ -142,18 +140,18 @@ void InertiaEstimatorEKF::estimateInertia(const double M[3], double sample_t,
     //  创建trackingEKF对象
     pd_.ekf.pIsFirstCallPredict = true;
     pd_.ekf.pIsFirstCallCorrect = true;
-    for (int i = 0; i < 6; i++) {
+    for (int i{0}; i < 6; i++) {
       pd_.ekf.pState[i] = 0.001;
     }
     pd_.ekf.pIsSetStateCovariance = true;
     pd_.ekf.pSqrtStateCovarianceScalar = -1.0;
     pd_.ekf.pIsValidMeasurementFcn = false;
     pd_.ekf.pIsValidStateTransitionFcn = false;
-    memcpy(&pd_.ekf.pSqrtStateCovariance[0], &b_value[0], 36U * sizeof(double));
-    memcpy(&pd_.ekf.pSqrtProcessNoise[0], &c_value[0], 36U * sizeof(double));
+    std::copy(&b_value[0], &b_value[36], &pd_.ekf.pSqrtStateCovariance[0]);
+    std::copy(&c_value[0], &c_value[36], &pd_.ekf.pSqrtProcessNoise[0]);
     pd_.ekf.pIsSetProcessNoise = true;
     pd_.ekf.pSqrtProcessNoiseScalar = -1.0;
-    memcpy(&pd_.ekf.pSqrtMeasurementNoise[0], &d_value[0], 9U * sizeof(double));
+    std::copy(&d_value[0], &d_value[9], &pd_.ekf.pSqrtMeasurementNoise[0]);
     pd_.ekf.pIsSetMeasurementNoise = true;
     pd_.ekf.pSqrtMeasurementNoiseScalar = -1.0;
     pd_.ekf.IsLastJacobianInitialized = false;
@@ -192,13 +190,15 @@ void InertiaEstimatorEKF::estimateInertia(const double M[3], double sample_t,
     pd_.ekf.pIsSetMeasurementNoise = true;
     pd_.ekf.pSqrtMeasurementNoiseScalar = -1.0;
   }
-  memcpy(&Rsqrt[0], &pd_.ekf.pSqrtMeasurementNoise[0], 9U * sizeof(double));
-  for (int i = 0; i < 6; i++) {
+  std::copy(&pd_.ekf.pSqrtMeasurementNoise[0],
+            &pd_.ekf.pSqrtMeasurementNoise[9], &Rsqrt[0]);
+  for (int i{0}; i < 6; i++) {
     stateEstimate[i] = pd_.ekf.pState[i];
   }
-  memcpy(&dv[0], &pd_.ekf.pSqrtStateCovariance[0], 36U * sizeof(double));
-  for (int j = 0; j < 3; j++) {
-    for (int i = 0; i < 6; i++) {
+  std::copy(&pd_.ekf.pSqrtStateCovariance[0], &pd_.ekf.pSqrtStateCovariance[36],
+            &dv[0]);
+  for (int j{0}; j < 3; j++) {
+    for (int i{0}; i < 6; i++) {
       aoffset = i * 6;
       s = 0.0;
       for (k = 0; k < 6; k++) {
@@ -212,7 +212,7 @@ void InertiaEstimatorEKF::estimateInertia(const double M[3], double sample_t,
     tau[j] = 0.0;
     work[j] = 0.0;
   }
-  for (int i = 0; i < 3; i++) {
+  for (int i{0}; i < 3; i++) {
     double atmp;
     int ii;
     int knt;
@@ -228,7 +228,7 @@ void InertiaEstimatorEKF::estimateInertia(const double M[3], double sample_t,
       if (d >= 0.0) {
         beta1 = -beta1;
       }
-      if (fabs(beta1) < 1.0020841800044864E-292) {
+      if (std::abs(beta1) < 1.0020841800044864E-292) {
         knt = 0;
         b_i = (ii - i) + 9;
         do {
@@ -238,7 +238,7 @@ void InertiaEstimatorEKF::estimateInertia(const double M[3], double sample_t,
           }
           beta1 *= 9.9792015476736E+291;
           atmp *= 9.9792015476736E+291;
-        } while ((fabs(beta1) < 1.0020841800044864E-292) && (knt < 20));
+        } while ((std::abs(beta1) < 1.0020841800044864E-292) && (knt < 20));
         beta1 = rt_hypotd_snf(
             atmp, coder::internal::blas::b_xnrm2(8 - i, c_M, ii + 2));
         if (atmp >= 0.0) {
@@ -306,10 +306,10 @@ void InertiaEstimatorEKF::estimateInertia(const double M[3], double sample_t,
       if (lastv > 0) {
         k = ii + 10;
         if (lastc + 1 != 0) {
-          memset(&work[0], 0,
-                 static_cast<unsigned int>(lastc + 1) * sizeof(double));
+          std::memset(&work[0], 0,
+                      static_cast<unsigned int>(lastc + 1) * sizeof(double));
           b_i = (ii + 9 * lastc) + 10;
-          for (int j = k; j <= b_i; j += 9) {
+          for (int j{k}; j <= b_i; j += 9) {
             s = 0.0;
             i1 = (j + lastv) - 1;
             for (knt = j; knt <= i1; knt++) {
@@ -321,7 +321,7 @@ void InertiaEstimatorEKF::estimateInertia(const double M[3], double sample_t,
         }
         if (!(-tau[i] == 0.0)) {
           aoffset = ii;
-          for (int j = 0; j <= lastc; j++) {
+          for (int j{0}; j <= lastc; j++) {
             d = work[j];
             if (d != 0.0) {
               s = d * -tau[i];
@@ -338,14 +338,14 @@ void InertiaEstimatorEKF::estimateInertia(const double M[3], double sample_t,
       c_M[ii] = atmp;
     }
   }
-  for (int j = 0; j < 3; j++) {
-    for (int i = 0; i <= j; i++) {
+  for (int j{0}; j < 3; j++) {
+    for (int i{0}; i <= j; i++) {
       R[i + 3 * j] = c_M[i + 9 * j];
     }
     b_i = j + 2;
     if (b_i <= 3) {
-      memset(&R[(j * 3 + b_i) + -1], 0,
-             static_cast<unsigned int>(-b_i + 4) * sizeof(double));
+      std::memset(&R[(j * 3 + b_i) + -1], 0,
+                  static_cast<unsigned int>(-b_i + 4) * sizeof(double));
     }
   }
   tau[0] = Omega[0] - stateEstimate[0];
@@ -375,10 +375,10 @@ void InertiaEstimatorEKF::estimateInertia(const double M[3], double sample_t,
   }
   coder::matlabshared::tracking::internal::EKFCorrectorAdditive::
       correctStateAndSqrtCovariance(stateEstimate, dv, tau, y, b_R, b_b, Rsqrt);
-  for (int i = 0; i < 6; i++) {
+  for (int i{0}; i < 6; i++) {
     pd_.ekf.pState[i] = stateEstimate[i];
   }
-  memcpy(&pd_.ekf.pSqrtStateCovariance[0], &dv[0], 36U * sizeof(double));
+  std::copy(&dv[0], &dv[36], &pd_.ekf.pSqrtStateCovariance[0]);
   pd_.ekf.pIsSetStateCovariance = true;
   pd_.ekf.pSqrtStateCovarianceScalar = -1.0;
   if (!pd_.ekf.pIsInitialized) {
@@ -386,7 +386,7 @@ void InertiaEstimatorEKF::estimateInertia(const double M[3], double sample_t,
   }
   //  根据实际测量值更新状态估计
   //  获取更新后的状态和协方差
-  for (int i = 0; i < 6; i++) {
+  for (int i{0}; i < 6; i++) {
     stateEstimate[i] = pd_.ekf.pState[i];
   }
   if ((!pd_.ekf.pIsSetStateCovariance) ||
@@ -398,7 +398,8 @@ void InertiaEstimatorEKF::estimateInertia(const double M[3], double sample_t,
     pd_.ekf.pIsSetStateCovariance = true;
     pd_.ekf.pSqrtStateCovarianceScalar = -1.0;
   }
-  memcpy(&dv[0], &pd_.ekf.pSqrtStateCovariance[0], 36U * sizeof(double));
+  std::copy(&pd_.ekf.pSqrtStateCovariance[0], &pd_.ekf.pSqrtStateCovariance[36],
+            &dv[0]);
   for (b_i = 0; b_i < 6; b_i++) {
     for (i1 = 0; i1 < 6; i1++) {
       d = 0.0;
@@ -410,7 +411,7 @@ void InertiaEstimatorEKF::estimateInertia(const double M[3], double sample_t,
     }
     out[b_i] = stateEstimate[b_i];
   }
-  memcpy(&out[6], &dv1[0], 36U * sizeof(double));
+  std::copy(&dv1[0], &dv1[36], &out[6]);
 }
 
 //
@@ -426,14 +427,14 @@ void stateTransitionFcn(const double x[6], const double p_[4], double out[6])
   double B_idx_0;
   double B_idx_1;
   double B_idx_2;
-  memset(&inertia[0], 0, 9U * sizeof(double));
+  std::memset(&inertia[0], 0, 9U * sizeof(double));
   inertia[0] = x[3];
   inertia[4] = x[4];
   inertia[8] = x[5];
   B_idx_0 = x[0];
   B_idx_1 = x[1];
   B_idx_2 = x[2];
-  for (int i = 0; i < 3; i++) {
+  for (int i{0}; i < 3; i++) {
     dotOmega[i] = (inertia[i] * B_idx_0 + inertia[i + 3] * B_idx_1) +
                   inertia[i + 6] * B_idx_2;
   }

@@ -2,7 +2,7 @@
 // File: EKFCorrectorAdditive.cpp
 //
 // MATLAB Coder version            : 5.6
-// C/C++ source code generated on  : 29-Feb-2024 17:32:45
+// C/C++ source code generated on  : 01-Mar-2024 18:43:15
 //
 
 // Include Files
@@ -11,8 +11,9 @@
 #include "rt_nonfinite.h"
 #include "trisolve.h"
 #include "xnrm2.h"
-#include <math.h>
-#include <string.h>
+#include <algorithm>
+#include <cmath>
+#include <cstring>
 
 // Function Definitions
 //
@@ -55,8 +56,8 @@ void EKFCorrectorAdditive::correctStateAndSqrtCovariance(
     b_Pxy[3 * i + 1] = Pxy[i + 6];
     b_Pxy[3 * i + 2] = Pxy[i + 12];
   }
-  memcpy(&K[0], &b_Pxy[0], 18U * sizeof(double));
-  for (int j = 0; j < 6; j++) {
+  std::copy(&b_Pxy[0], &b_Pxy[18], &K[0]);
+  for (int j{0}; j < 6; j++) {
     b_Pxy[3 * j] = K[3 * j];
     coffset = 3 * j + 1;
     b_Pxy[coffset] = K[coffset];
@@ -64,7 +65,7 @@ void EKFCorrectorAdditive::correctStateAndSqrtCovariance(
     b_Pxy[coffset] = K[coffset];
   }
   ::coder::internal::trisolve(Sy, b_Pxy);
-  for (int j = 0; j < 6; j++) {
+  for (int j{0}; j < 6; j++) {
     C[3 * j] = b_Pxy[3 * j];
     coffset = 3 * j + 1;
     C[coffset] = b_Pxy[coffset];
@@ -100,13 +101,13 @@ void EKFCorrectorAdditive::correctStateAndSqrtCovariance(
           (d * H[3 * i1] + s * H[3 * i1 + 1]) + beta1 * H[3 * i1 + 2];
     }
   }
-  for (int b_i = 0; b_i < 6; b_i++) {
+  for (int b_i{0}; b_i < 6; b_i++) {
     coffset = b_i + 6 * b_i;
     A[coffset]++;
   }
-  for (int j = 0; j < 6; j++) {
+  for (int j{0}; j < 6; j++) {
     coffset = j * 6;
-    for (int b_i = 0; b_i < 6; b_i++) {
+    for (int b_i{0}; b_i < 6; b_i++) {
       aoffset = b_i * 6;
       s = 0.0;
       for (k = 0; k < 6; k++) {
@@ -123,7 +124,7 @@ void EKFCorrectorAdditive::correctStateAndSqrtCovariance(
       b_Pxy[i + 3 * i1] = (K[i1] * d + K[i1 + 6] * s) + K[i1 + 12] * beta1;
     }
   }
-  for (int b_i = 0; b_i < 6; b_i++) {
+  for (int b_i{0}; b_i < 6; b_i++) {
     for (i = 0; i < 6; i++) {
       M[i + 9 * b_i] = b_C[i + 6 * b_i];
     }
@@ -133,7 +134,7 @@ void EKFCorrectorAdditive::correctStateAndSqrtCovariance(
     tau[b_i] = 0.0;
     work[b_i] = 0.0;
   }
-  for (int b_i = 0; b_i < 6; b_i++) {
+  for (int b_i{0}; b_i < 6; b_i++) {
     double atmp;
     int ii;
     ii = b_i * 9 + b_i;
@@ -147,7 +148,7 @@ void EKFCorrectorAdditive::correctStateAndSqrtCovariance(
       if (d >= 0.0) {
         beta1 = -beta1;
       }
-      if (fabs(beta1) < 1.0020841800044864E-292) {
+      if (std::abs(beta1) < 1.0020841800044864E-292) {
         aoffset = 0;
         i = (ii - b_i) + 9;
         do {
@@ -157,7 +158,7 @@ void EKFCorrectorAdditive::correctStateAndSqrtCovariance(
           }
           beta1 *= 9.9792015476736E+291;
           atmp *= 9.9792015476736E+291;
-        } while ((fabs(beta1) < 1.0020841800044864E-292) && (aoffset < 20));
+        } while ((std::abs(beta1) < 1.0020841800044864E-292) && (aoffset < 20));
         beta1 = rt_hypotd_snf(
             atmp, ::coder::internal::blas::c_xnrm2(8 - b_i, M, ii + 2));
         if (atmp >= 0.0) {
@@ -225,10 +226,10 @@ void EKFCorrectorAdditive::correctStateAndSqrtCovariance(
       if (lastv > 0) {
         aoffset = ii + 10;
         if (lastc + 1 != 0) {
-          memset(&work[0], 0,
-                 static_cast<unsigned int>(lastc + 1) * sizeof(double));
+          std::memset(&work[0], 0,
+                      static_cast<unsigned int>(lastc + 1) * sizeof(double));
           i = (ii + 9 * lastc) + 10;
-          for (int j = aoffset; j <= i; j += 9) {
+          for (int j{aoffset}; j <= i; j += 9) {
             s = 0.0;
             i1 = (j + lastv) - 1;
             for (k = j; k <= i1; k++) {
@@ -240,7 +241,7 @@ void EKFCorrectorAdditive::correctStateAndSqrtCovariance(
         }
         if (!(-tau[b_i] == 0.0)) {
           coffset = ii;
-          for (int j = 0; j <= lastc; j++) {
+          for (int j{0}; j <= lastc; j++) {
             d = work[j];
             if (d != 0.0) {
               s = d * -tau[b_i];
@@ -257,14 +258,14 @@ void EKFCorrectorAdditive::correctStateAndSqrtCovariance(
       M[ii] = atmp;
     }
   }
-  for (int j = 0; j < 6; j++) {
-    for (int b_i = 0; b_i <= j; b_i++) {
+  for (int j{0}; j < 6; j++) {
+    for (int b_i{0}; b_i <= j; b_i++) {
       A[b_i + 6 * j] = M[b_i + 9 * j];
     }
     i = j + 2;
     if (i <= 6) {
-      memset(&A[(j * 6 + i) + -1], 0,
-             static_cast<unsigned int>(-i + 7) * sizeof(double));
+      std::memset(&A[(j * 6 + i) + -1], 0,
+                  static_cast<unsigned int>(-i + 7) * sizeof(double));
     }
   }
   for (i = 0; i < 6; i++) {

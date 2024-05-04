@@ -2,7 +2,7 @@
 // File: trisolve.cpp
 //
 // MATLAB Coder version            : 5.6
-// C/C++ source code generated on  : 29-Feb-2024 17:32:45
+// C/C++ source code generated on  : 01-Mar-2024 18:43:15
 //
 
 // Include Files
@@ -19,10 +19,10 @@ namespace coder {
 namespace internal {
 void b_trisolve(const double A[9], double B[18])
 {
-  for (int j = 0; j < 6; j++) {
+  for (int j{0}; j < 6; j++) {
     int jBcol;
     jBcol = 3 * j;
-    for (int k = 2; k >= 0; k--) {
+    for (int k{2}; k >= 0; k--) {
       double d;
       int i;
       int kAcol;
@@ -31,7 +31,7 @@ void b_trisolve(const double A[9], double B[18])
       d = B[i];
       if (d != 0.0) {
         B[i] = d / A[k + kAcol];
-        for (int b_i = 0; b_i < k; b_i++) {
+        for (int b_i{0}; b_i < k; b_i++) {
           int i1;
           i1 = b_i + jBcol;
           B[i1] -= B[i] * A[b_i + kAcol];
@@ -48,10 +48,10 @@ void b_trisolve(const double A[9], double B[18])
 //
 void trisolve(const double A[9], double B[18])
 {
-  for (int j = 0; j < 6; j++) {
+  for (int j{0}; j < 6; j++) {
     int jBcol;
     jBcol = 3 * j - 1;
-    for (int k = 0; k < 3; k++) {
+    for (int k{0}; k < 3; k++) {
       double d;
       int i;
       int kAcol;
@@ -62,7 +62,7 @@ void trisolve(const double A[9], double B[18])
         int i1;
         B[i] = d / A[(k + kAcol) + 1];
         i1 = k + 2;
-        for (int b_i = i1; b_i < 4; b_i++) {
+        for (int b_i{i1}; b_i < 4; b_i++) {
           int i2;
           i2 = b_i + jBcol;
           B[i2] -= B[i] * A[b_i + kAcol];

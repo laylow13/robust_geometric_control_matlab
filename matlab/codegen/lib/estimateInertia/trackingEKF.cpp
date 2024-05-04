@@ -2,7 +2,7 @@
 // File: trackingEKF.cpp
 //
 // MATLAB Coder version            : 5.6
-// C/C++ source code generated on  : 29-Feb-2024 17:32:45
+// C/C++ source code generated on  : 01-Mar-2024 18:43:15
 //
 
 // Include Files
@@ -12,9 +12,8 @@
 #include "estimateInertia_rtwutil.h"
 #include "rt_nonfinite.h"
 #include "xnrm2.h"
-#include "rt_nonfinite.h"
-#include <math.h>
-#include <string.h>
+#include <cmath>
+#include <cstring>
 
 // Function Definitions
 //
@@ -69,22 +68,20 @@ void trackingEKF::predict(const double varargin_1[4])
   for (i = 0; i < 36; i++) {
     Qsqrt[i] = pSqrtProcessNoise[i];
   }
-  for (int b_i = 0; b_i < 6; b_i++) {
+  for (int b_i{0}; b_i < 6; b_i++) {
     dv[b_i] = pState[b_i];
   }
   for (i = 0; i < 36; i++) {
     dv1[i] = pSqrtStateCovariance[i];
   }
   stateTransitionFcn(dv, varargin_1, z);
-  for (int j = 0; j < 6; j++) {
-    for (int b_i = 0; b_i < 6; b_i++) {
+  for (int j{0}; j < 6; j++) {
+    for (int b_i{0}; b_i < 6; b_i++) {
       imvec[b_i] = dv[b_i];
     }
     d = dv[j];
-    epsilon = 1.4901161193847656E-8 * fabs(d);
-    if ((epsilon <= 1.4901161193847656E-8) || rtIsNaN(epsilon)) {
-      epsilon = 1.4901161193847656E-8;
-    }
+    epsilon =
+        std::fmax(1.4901161193847656E-8, 1.4901161193847656E-8 * std::abs(d));
     imvec[j] = d + epsilon;
     stateTransitionFcn(imvec, varargin_1, dv2);
     for (i = 0; i < 6; i++) {
@@ -95,8 +92,8 @@ void trackingEKF::predict(const double varargin_1[4])
     dv2[i] = dv[i];
   }
   stateTransitionFcn(dv2, varargin_1, dv);
-  for (int j = 0; j < 6; j++) {
-    for (int b_i = 0; b_i < 6; b_i++) {
+  for (int j{0}; j < 6; j++) {
+    for (int b_i{0}; b_i < 6; b_i++) {
       aoffset = b_i * 6;
       epsilon = 0.0;
       for (k = 0; k < 6; k++) {
@@ -109,7 +106,7 @@ void trackingEKF::predict(const double varargin_1[4])
     z[j] = 0.0;
     imvec[j] = 0.0;
   }
-  for (int b_i = 0; b_i < 6; b_i++) {
+  for (int b_i{0}; b_i < 6; b_i++) {
     double atmp;
     int ii;
     int knt;
@@ -125,7 +122,7 @@ void trackingEKF::predict(const double varargin_1[4])
       if (d >= 0.0) {
         beta1 = -beta1;
       }
-      if (fabs(beta1) < 1.0020841800044864E-292) {
+      if (std::abs(beta1) < 1.0020841800044864E-292) {
         knt = 0;
         i = (ii - b_i) + 12;
         do {
@@ -135,7 +132,7 @@ void trackingEKF::predict(const double varargin_1[4])
           }
           beta1 *= 9.9792015476736E+291;
           atmp *= 9.9792015476736E+291;
-        } while ((fabs(beta1) < 1.0020841800044864E-292) && (knt < 20));
+        } while ((std::abs(beta1) < 1.0020841800044864E-292) && (knt < 20));
         beta1 = rt_hypotd_snf(atmp, internal::blas::xnrm2(11 - b_i, M, ii + 2));
         if (atmp >= 0.0) {
           beta1 = -beta1;
@@ -202,10 +199,10 @@ void trackingEKF::predict(const double varargin_1[4])
       if (lastv > 0) {
         knt = ii + 13;
         if (lastc + 1 != 0) {
-          memset(&imvec[0], 0,
-                 static_cast<unsigned int>(lastc + 1) * sizeof(double));
+          std::memset(&imvec[0], 0,
+                      static_cast<unsigned int>(lastc + 1) * sizeof(double));
           i = (ii + 12 * lastc) + 13;
-          for (int j = knt; j <= i; j += 12) {
+          for (int j{knt}; j <= i; j += 12) {
             epsilon = 0.0;
             i1 = (j + lastv) - 1;
             for (k = j; k <= i1; k++) {
@@ -217,7 +214,7 @@ void trackingEKF::predict(const double varargin_1[4])
         }
         if (!(-z[b_i] == 0.0)) {
           aoffset = ii;
-          for (int j = 0; j <= lastc; j++) {
+          for (int j{0}; j <= lastc; j++) {
             d = imvec[j];
             if (d != 0.0) {
               epsilon = d * -z[b_i];
@@ -234,17 +231,17 @@ void trackingEKF::predict(const double varargin_1[4])
       M[ii] = atmp;
     }
   }
-  for (int j = 0; j < 6; j++) {
-    for (int b_i = 0; b_i <= j; b_i++) {
+  for (int j{0}; j < 6; j++) {
+    for (int b_i{0}; b_i <= j; b_i++) {
       Qsqrt[b_i + 6 * j] = M[b_i + 12 * j];
     }
     i = j + 2;
     if (i <= 6) {
-      memset(&Qsqrt[(j * 6 + i) + -1], 0,
-             static_cast<unsigned int>(-i + 7) * sizeof(double));
+      std::memset(&Qsqrt[(j * 6 + i) + -1], 0,
+                  static_cast<unsigned int>(-i + 7) * sizeof(double));
     }
   }
-  for (int b_i = 0; b_i < 6; b_i++) {
+  for (int b_i{0}; b_i < 6; b_i++) {
     pState[b_i] = dv[b_i];
   }
   for (i = 0; i < 6; i++) {
@@ -263,17 +260,13 @@ void trackingEKF::predict(const double varargin_1[4])
 // Arguments    : void
 // Return Type  : trackingEKF
 //
-trackingEKF::trackingEKF()
-{
-}
+trackingEKF::trackingEKF() = default;
 
 //
 // Arguments    : void
 // Return Type  : void
 //
-trackingEKF::~trackingEKF()
-{
-}
+trackingEKF::~trackingEKF() = default;
 
 } // namespace coder
 

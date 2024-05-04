@@ -2,7 +2,7 @@
 // File: _coder_estimateInertia_info.cpp
 //
 // MATLAB Coder version            : 5.6
-// C/C++ source code generated on  : 29-Feb-2024 17:32:45
+// C/C++ source code generated on  : 01-Mar-2024 18:43:15
 //
 
 // Include Files
@@ -20,10 +20,10 @@ static const mxArray *emlrtMexFcnResolvedFunctionsInfo();
 //
 static const mxArray *emlrtMexFcnResolvedFunctionsInfo()
 {
-  static const int32_T iv[2] = {0, 1};
+  static const int32_T iv[2]{0, 1};
   const mxArray *m;
   const mxArray *nameCaptureInfo;
-  nameCaptureInfo = NULL;
+  nameCaptureInfo = nullptr;
   m = emlrtCreateNumericArray(2, (const void *)&iv[0], mxDOUBLE_CLASS, mxREAL);
   emlrtAssign(&nameCaptureInfo, m);
   return nameCaptureInfo;
@@ -38,10 +38,10 @@ mxArray *emlrtMexFcnProperties()
   mxArray *xEntryPoints;
   mxArray *xInputs;
   mxArray *xResult;
-  const char_T *propFieldName[7] = {
+  const char_T *propFieldName[7]{
       "Version",      "ResolvedFunctions", "Checksum",    "EntryPoints",
       "CoverageInfo", "IsPolymorphic",     "PropertyList"};
-  const char_T *epFieldName[6] = {
+  const char_T *epFieldName[6]{
       "Name",           "NumberOfInputs", "NumberOfOutputs",
       "ConstantInputs", "FullPath",       "TimeStamp"};
   xEntryPoints =

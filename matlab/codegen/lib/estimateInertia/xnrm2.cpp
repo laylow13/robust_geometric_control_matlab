@@ -2,13 +2,13 @@
 // File: xnrm2.cpp
 //
 // MATLAB Coder version            : 5.6
-// C/C++ source code generated on  : 29-Feb-2024 17:32:45
+// C/C++ source code generated on  : 01-Mar-2024 18:43:15
 //
 
 // Include Files
 #include "xnrm2.h"
 #include "rt_nonfinite.h"
-#include <math.h>
+#include <cmath>
 
 // Function Definitions
 //
@@ -26,15 +26,15 @@ double b_xnrm2(int n, const double x[27], int ix0)
   y = 0.0;
   if (n >= 1) {
     if (n == 1) {
-      y = fabs(x[ix0 - 1]);
+      y = std::abs(x[ix0 - 1]);
     } else {
       double scale;
       int kend;
       scale = 3.3121686421112381E-170;
       kend = (ix0 + n) - 1;
-      for (int k = ix0; k <= kend; k++) {
+      for (int k{ix0}; k <= kend; k++) {
         double absxk;
-        absxk = fabs(x[k - 1]);
+        absxk = std::abs(x[k - 1]);
         if (absxk > scale) {
           double t;
           t = scale / absxk;
@@ -46,7 +46,7 @@ double b_xnrm2(int n, const double x[27], int ix0)
           y += t * t;
         }
       }
-      y = scale * sqrt(y);
+      y = scale * std::sqrt(y);
     }
   }
   return y;
@@ -64,15 +64,15 @@ double c_xnrm2(int n, const double x[54], int ix0)
   y = 0.0;
   if (n >= 1) {
     if (n == 1) {
-      y = fabs(x[ix0 - 1]);
+      y = std::abs(x[ix0 - 1]);
     } else {
       double scale;
       int kend;
       scale = 3.3121686421112381E-170;
       kend = (ix0 + n) - 1;
-      for (int k = ix0; k <= kend; k++) {
+      for (int k{ix0}; k <= kend; k++) {
         double absxk;
-        absxk = fabs(x[k - 1]);
+        absxk = std::abs(x[k - 1]);
         if (absxk > scale) {
           double t;
           t = scale / absxk;
@@ -84,7 +84,7 @@ double c_xnrm2(int n, const double x[54], int ix0)
           y += t * t;
         }
       }
-      y = scale * sqrt(y);
+      y = scale * std::sqrt(y);
     }
   }
   return y;
@@ -102,15 +102,15 @@ double xnrm2(int n, const double x[72], int ix0)
   y = 0.0;
   if (n >= 1) {
     if (n == 1) {
-      y = fabs(x[ix0 - 1]);
+      y = std::abs(x[ix0 - 1]);
     } else {
       double scale;
       int kend;
       scale = 3.3121686421112381E-170;
       kend = (ix0 + n) - 1;
-      for (int k = ix0; k <= kend; k++) {
+      for (int k{ix0}; k <= kend; k++) {
         double absxk;
-        absxk = fabs(x[k - 1]);
+        absxk = std::abs(x[k - 1]);
         if (absxk > scale) {
           double t;
           t = scale / absxk;
@@ -122,7 +122,7 @@ double xnrm2(int n, const double x[72], int ix0)
           y += t * t;
         }
       }
-      y = scale * sqrt(y);
+      y = scale * std::sqrt(y);
     }
   }
   return y;

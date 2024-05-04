@@ -111,7 +111,12 @@ function sys=mdlDerivatives(t,x,uu,P)
 % Quadrotor equations of motion taken from
 % Lee et al, Control of Complex Maneuvers for a Quadrotor UAV using
 % Geometric Methods on SE(3), 2011.
-
+% if t>5
+% P.mass=6;
+% P.Jxx     = 0.3; % [kg-m2]
+% P.Jyy     = 0.3; % [kg-m2]
+% P.Jzz     = 0.5; 
+% end
     % position in the inertial frame
     p       = x(1:3);
     % velocity in the inertial frame

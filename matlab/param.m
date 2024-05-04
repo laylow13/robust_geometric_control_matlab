@@ -1,12 +1,12 @@
 clear; clc;
-
+global P;
 % Sample time of the controller
 P.Ts = 0.01;
 
 % Sample time of the state plotter
 P.plotTs = 0.1;
 
-% physical parameters of airframe
+% physical    of airframe
 P.gravity = 9.81;   % [m/s/s]
 P.mass    = 4.34;   % [kg]
 P.Jxx     = 0.0820; % [kg-m2]
@@ -42,7 +42,7 @@ P.kv = 5.6*P.mass;
 P.kR = 8.81;
 P.kOmega = 2.54;
 
-P.kx = 4*P.mass;
+P.kx = 16*P.mass;
 P.kv = 5.6*P.mass;
 P.kR = 8.81;
 P.kOmega = 2.54;
